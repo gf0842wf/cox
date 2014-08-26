@@ -12,6 +12,14 @@ How to use
 ===
 put cox.lua under your src direcotry, and require it.
 
+Simple test
+===
+<pre>
+local cox = require("cox")
+local carrot = cox.newspr{parent=layer, tex="icon.png"}
+carrot:runact{"moveb", 2, 200, 0}
+</pre>
+
 Sprite and Action
 ===
 
