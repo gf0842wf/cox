@@ -1,4 +1,5 @@
--- A lightly wrapping of Cocos2d-x lua, providing unix style interfaces.
+-- A lightly wrapping of Cocos2d-x lua, unix style interfaces.
+-- https://github.com/zii/cox
 -- v0.1, support cocos2d-x 3.2.
 
 require "Cocos2d"
@@ -52,7 +53,8 @@ end
 eg.
 local function onrelease(code, event)
     if code == cc.KeyCode.KEY_BACK then
-        D:endToLua()
+        cox.d:endToLua()
+    end
 end
 cox.bindkey(layer, onrelease)
 ]]
@@ -64,11 +66,15 @@ function cox.bindk(node, cb)
     eventDispatcher:addEventListenerWithSceneGraphPriority(listener, node)
 end
 
--- bind KEY_BACK event
-function cox.bindkb(node, cb)
+--[[ bind KEY_BACK event
+eg.
+cox.bindkb(layer, function() cox.d:endToLua() end)
+]]
+function cox.bindkb(node, cb, ...)
+    local arg = ...
     local function onpress(code, event)
         if code == cc.KeyCode.KEY_BACK then
-            cb()
+            cb(arg)
         end
     end
     cox.bindk(node, onpress)
@@ -90,9 +96,15 @@ function cox.stopms()
     SA:stopMusic()
 end
 
--- create a cc.Sprite and add to parent node.
--- eg.
--- cox.newspr{parent=layer, texf="carrot.png", x=cox.w/2, y=276}
+--[[ create a cc.Sprite and add to parent node.
+@texf load texture with frame name
+@tex  load texture from file
+@animf load texture with animation
+eg.
+local spr = cox.newspr{parent=layer, texf="carrot.png", x=cox.w/2, y=276}
+spr:set{scale=2, rot=90, name="carrot"}
+spr:runact{"move", 1, 100, 100}
+]]
 function cox.newspr(arg)
     local spr = nil
     if arg.texf then
@@ -105,14 +117,16 @@ function cox.newspr(arg)
         spr = cc.Sprite:create()
     end
     cox.setspr(spr, arg)
+    -- add some methods
     spr.set = cox.setspr
     spr.runact = cox.runact
     return spr
 end
 
--- set sprite's attributes
--- eg.
--- tip:set{parent=self, name="uptip", x=0, y=60}
+--[[ set sprite's attributes
+eg.
+tip:set{parent=self, name="uptip", x=0, y=60, ac={0.5, 0.5}}
+]]
 function cox.setspr(spr, arg)
     if arg.x then
         spr:setPositionX(arg.x)
@@ -153,8 +167,8 @@ function cox.setspr(spr, arg)
     end
 end
 
---[[
-Create a cc.Animate action with frame names.
+
+--[[ Create a cc.Animate action with frame names.
 eg.
 cox.animf("air%02d.png", {1,2,3,4,5}, 0.06)
 ]]
