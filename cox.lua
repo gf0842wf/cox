@@ -23,6 +23,11 @@ cox.ud = UD
 cox.sa = SA
 cox.fu = FU
 
+
+cox.log = function(...)
+    print(string.format(...))
+end
+
 -- remove by element
 function table.del(t, elem)
     for i, v in ipairs(t) do
@@ -33,7 +38,7 @@ function table.del(t, elem)
 end
 
 -- set resolution
-function cox.setrs(w, h, type)
+function cox.setrso(w, h, type)
     D:getOpenGLView():setDesignResolutionSize(w, h, type)
     SIZE = D:getWinSize()
     cox.w = SIZE.width
