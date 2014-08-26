@@ -1,7 +1,5 @@
 cox
 ===
-
-
 A lightly wrapping of Cocos2d-x lua, providing unix style interfaces.
 
 Current Version:
@@ -22,7 +20,6 @@ carrot:runact{"moveb", 2, 200, 0}
 
 Sprite and Action
 ===
-
 <pre>
 local cox = require("cox")
 
