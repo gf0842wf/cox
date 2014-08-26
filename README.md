@@ -8,7 +8,7 @@ Current Version:
 v0.1, support cocos2d-x 3.2.
 
 
-Example
+Sprite and Action
 ===
 
 <pre>
@@ -34,7 +34,7 @@ p:runact{
 }
 </pre>
 
-Create a animation sprite from frame names
+Animate sprite
 ===
 <pre>
 local block = cox.newspr{animf={"select_%02d.png", {1,2}, 0.2}}
