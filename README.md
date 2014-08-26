@@ -8,6 +8,10 @@ Current Version:
 v0.1, support cocos2d-x 3.2.
 
 
+How to use
+===
+put cox.lua under your src direcotry, and require it.
+
 Sprite and Action
 ===
 
