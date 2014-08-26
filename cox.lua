@@ -1,4 +1,4 @@
--- A light wrapping of Cocos2d-x lua, providing unix style interfaces.
+-- A lightly wrapping of Cocos2d-x lua, providing unix style interfaces.
 -- v0.1, support cocos2d-x 3.2.
 
 require "Cocos2d"
@@ -142,6 +142,14 @@ function cox.setspr(spr, arg)
     end
     if arg.parent then
         arg.parent:addChild(spr)
+        -- default in middle
+        local size = arg.parent:getContentSize()
+        if not arg.x then
+            spr:setPositionX(size.width/2)
+        end
+        if not arg.y then
+            spr:setPositionY(size.height/2)
+        end
     end
 end
 
