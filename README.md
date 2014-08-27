@@ -3,7 +3,7 @@ cox
 A lightweight unix style wrapping of Cocos2d-x-lua.
 
 Current Version:
-v0.1, support cocos2d-x 3.2.
+v0.1.1, support cocos2d-x 3.2.
 
 
 How to use
@@ -14,7 +14,7 @@ Simple test
 ===
 <pre>
 local cox = require("cox")
-local carrot = cox.newspr{parent=layer, tex="icon.png"}
+local carrot = cox.newspr{on=layer, tex="icon.png"}
 carrot:runact{"moveb", 2, 200, 0}
 </pre>
 
@@ -23,7 +23,7 @@ Sprite and Action
 <pre>
 local cox = require("cox")
 
-local p = cox.newspr{parent=layer, texf="carrot.png", x=cox.w/2, y=276}
+local p = cox.newspr{on=layer, texf="carrot.png", x=cox.w/2, y=276}
 p:set{name="carrot"}
 p:runact{
     {"delay", 3},
@@ -46,6 +46,6 @@ p:runact{
 Animate sprite
 ===
 <pre>
-local block = cox.newspr{parent=layer, animf={"select_%02d.png", {1,2}, 0.2}}
+local block = cox.newspr{on=layer, animf={"select_%02d.png", {1,2}, 0.2}}
 block:play(1) -- play once and remove self
 </pre>

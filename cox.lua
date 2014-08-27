@@ -103,14 +103,17 @@ function cox.stopms()
     SA:stopMusic()
 end
 
---[[ create a cc.Sprite and add to parent node.
+--[[ create a cc.Sprite init with attributes.
 @texf load texture with frame name
-@tex  load texture from file
+@tex  load texture with file name
 @animf load texture with animation
 eg.
-local spr = cox.newspr{parent=layer, texf="carrot.png", x=cox.w/2, y=276}
+local spr = cox.newspr{on=layer, texf="carrot.png", x=cox.w/2, y=276}
 spr:set{scale=2, rot=90, name="carrot"}
 spr:runact{"move", 1, 100, 100}
+eg.
+local spr = cox.newspr{on=layer, animf={"select_%02d.png", {1,2}, 0.2}}
+spr.play()
 ]]
 function cox.newspr(arg)
     local spr = nil
@@ -132,7 +135,7 @@ end
 
 --[[ set sprite's attributes
 eg.
-tip:set{parent=self, name="uptip", x=0, y=60, ac={0.5, 0.5}}
+tip:set{on=self, name="uptip", x=0, y=60, ac={0.5, 0.5}}
 ]]
 function cox.setspr(spr, arg)
     if arg.x then
@@ -161,10 +164,11 @@ function cox.setspr(spr, arg)
     if arg.scale then
         spr:setScale(arg.scale)
     end
-    if arg.parent then
-        arg.parent:addChild(spr)
+    local parent = arg.parent or arg.on
+    if parent then
+        parent:addChild(spr)
         -- default in middle
-        local size = arg.parent:getContentSize()
+        local size = parent:getContentSize()
         if not arg.x then
             spr:setPositionX(size.width/2)
         end
@@ -175,7 +179,7 @@ function cox.setspr(spr, arg)
 end
 
 
---[[ Create a cc.Animate action with frame names.
+--[[ create a cc.Animate with frame names.
 eg.
 cox.animf("air%02d.png", {1,2,3,4,5}, 0.06)
 ]]
@@ -206,8 +210,7 @@ function cox._animspr(format, numbers, dt)
     return spr
 end
 
---[[
-Create a cc.Action with a simple lua table.
+--[[ create a cc.Action with a config table.
 eg.
 luobo:runAction(cox.act{
 {"delay", 3},
