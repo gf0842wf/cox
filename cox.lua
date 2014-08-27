@@ -1,4 +1,4 @@
--- A lightweight wrapping of Cocos2d-x lua, unix style interfaces.
+-- A lightweight unix style wrapping of Cocos2d-x-lua.
 -- https://github.com/zii/cox
 -- v0.1, support cocos2d-x 3.2.
 
