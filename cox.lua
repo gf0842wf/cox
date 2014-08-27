@@ -24,8 +24,10 @@ cox.sa = SA
 cox.fu = FU
 
 
-cox.log = function(...)
-    print(string.format(...))
+function cox.traceback(msg)
+    print("LUA ERROR: " .. tostring(msg))
+    print(debug.traceback())
+    return msg
 end
 
 -- remove by element
