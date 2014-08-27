@@ -1,0 +1,6 @@
+v0.? 
+- rename the attribute "parent" to "on" 
+
+v0.1 @ 2014-8-27
+- add switch, bindk
+- add newspr, setspr, runact
