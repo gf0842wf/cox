@@ -46,6 +46,6 @@ p:runact{
 Animate sprite
 ===
 <pre>
-local block = cox.newspr{animf={"select_%02d.png", {1,2}, 0.2}}
+local block = cox.newspr{parent=layer, animf={"select_%02d.png", {1,2}, 0.2}}
 block:play(1) -- play once and remove self
 </pre>
