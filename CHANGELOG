@@ -1,6 +1,6 @@
 cox-0.? 
 - rename the attribute "parent" to "on" 
 
-cox-0.1 @ 2014-8-27
+cox-0.1 @ 2014-8-26
 - add switch, bindk
 - add newspr, setspr, runact
