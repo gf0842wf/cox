@@ -13,6 +13,7 @@ local SIZE = D:getWinSize()
 local UD = cc.UserDefault:getInstance()
 local SA = cc.SimpleAudioEngine:getInstance()
 local FU = cc.FileUtils:getInstance()
+local GR = ccs.GUIReader:getInstance()
 
 cox.d = D
 cox.tc = TC
@@ -22,12 +23,20 @@ cox.h = SIZE.height
 cox.ud = UD
 cox.sa = SA
 cox.fu = FU
-
+cox.gr = GR
 
 function cox.traceback(msg)
-    print("LUA ERROR: " .. tostring(msg))
     print(debug.traceback())
+    print("LUA ERROR: " .. tostring(msg))
     return msg
+end
+
+-- it will print error when the function panic
+function cox.xpcall(main)
+    local status, msg = xpcall(main, cox.traceback)
+    if not status then
+        error(msg)
+    end
 end
 
 -- remove by element
@@ -54,6 +63,32 @@ function cox.switch(nextscene)
     else
         D:runWithScene(nextscene)
     end
+end
+
+function cox.setud(name, v)
+    local t = type(v)
+    if t == "boolean" then
+        UD:setBoolForKey(name, v)
+    elseif t == "number" then
+        UD:setDoubleForKey(name, v)
+    elseif t == "string" then
+        UD:setStringForKey(name, v)
+    end
+end
+
+function cox.getud(name, t, defv)
+    local v
+    if t == "b" then
+        v = UD:getBoolForKey(name)
+    elseif t == "n" then
+        v = UD:getDoubleForKey(name)
+    elseif t == "s" then
+        v = UD:getStringForKey(name)
+    end
+    if v == nil then
+        v = defv
+    end
+    return v
 end
 
 --[[ bind key event
@@ -254,7 +289,11 @@ function cox.act(cfg)
         elseif tok == "rotb" then
             act = cc.RotateBy:create(v[2], v[3])
         elseif tok == "scale" then
-            act = cc.ScaleTo:create(v[2], v[3])
+            if v[4] then
+                act = cc.ScaleTo:create(v[2], v[3], v[4])
+            else
+                act = cc.ScaleTo:create(v[2], v[3])
+            end
         elseif tok == "scaleb" then
             act = cc.ScaleBy:create(v[2], v[3])
         elseif tok == "remove" then
@@ -269,6 +308,10 @@ function cox.act(cfg)
             act = cc.FlipX:create(v[2])
         elseif tok == "flipy" then
             act = cc.FlipY:create(v[2])
+        elseif tok == "show" then
+            act = cc.Show:create()
+        elseif tok == "hide" then
+            act = cc.Hide:create()
         end
         return act
     elseif type(tok) == "table" then
@@ -314,6 +357,46 @@ function cox.runact(node, cfg)
     local act = cox.act(cfg)
     node:runAction(act)
     return act
+end
+
+-- load Cocos Studio ui config, return a GUI cc.Layer
+function cox.loadui(path)
+    if string.sub(path, -4, -1) == ".csb" then
+        return GR:widgetFromBinaryFile(path)
+    else
+        return GR:widgetFromJsonFile("scene/hello.ExportJson")
+    end
+end
+
+function cox.seekui(node, name)
+    local widget = ccui.Helper:seekWidgetByName(node, name)
+    widget.ontouch = cox.ontouch
+    widget.runact = cox.runact
+    return widget
+end
+
+-- add ui touch event
+function cox.ontouch(widget, cb, et)
+    et = et or ccui.TouchEventType.ended
+    widget:addTouchEventListener(function(sender, e) 
+        if e ~= et then return end
+        cb()
+    end)
+end
+
+-- add event listener on node
+function cox.listen(node, cb, et)
+    et = et or cc.Handler.EVENT_TOUCH_BEGAN
+    local listener = cc.EventListenerTouchOneByOne:create()
+    -- it must have EVENT_TOUCH_BEGAN
+    if et ~= cc.Handler.EVENT_TOUCH_BEGAN then
+        listener:registerScriptHandler(function() 
+            return true
+        end, cc.Handler.EVENT_TOUCH_BEGAN)
+    end
+    listener:registerScriptHandler(cb, et)
+    local dispatcher = node:getEventDispatcher()
+    dispatcher:addEventListenerWithSceneGraphPriority(listener, node)
 end
 
 return cox
