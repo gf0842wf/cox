@@ -56,6 +56,11 @@ function cox.setrso(w, h, type)
     cox.h = SIZE.height
 end
 
+-- load sprite frames to texture cache
+function cox.addsf(format, ...)
+    cox.fc:addSpriteFrames(string.format(format, ...))
+end
+
 -- run or replace scene
 function cox.switch(nextscene)
     if D:getRunningScene() then
@@ -82,6 +87,9 @@ function cox.getud(name, t, defv)
         v = UD:getBoolForKey(name)
     elseif t == "n" then
         v = UD:getDoubleForKey(name)
+        if defv and v == 0 then
+            v = defv
+        end
     elseif t == "s" then
         v = UD:getStringForKey(name)
     end
@@ -361,15 +369,21 @@ end
 
 -- load Cocos Studio ui config, return a GUI cc.Layer
 function cox.loadui(path)
+    local panel
     if string.sub(path, -4, -1) == ".csb" then
-        return GR:widgetFromBinaryFile(path)
+        panel = GR:widgetFromBinaryFile(path)
     else
-        return GR:widgetFromJsonFile("scene/hello.ExportJson")
+        panel = GR:widgetFromJsonFile(path)
     end
+    if panel then
+        panel.seek = cox.seekui
+    end
+    return panel
 end
 
 function cox.seekui(node, name)
     local widget = ccui.Helper:seekWidgetByName(node, name)
+    widget.seek = cox.seekui
     widget.ontouch = cox.ontouch
     widget.runact = cox.runact
     return widget
@@ -379,8 +393,8 @@ end
 function cox.ontouch(widget, cb, et)
     et = et or ccui.TouchEventType.ended
     widget:addTouchEventListener(function(sender, e) 
-        if e ~= et then return end
-        cb()
+        if e ~= et then return true end
+        return cb()
     end)
 end
 
@@ -397,6 +411,29 @@ function cox.listen(node, cb, et)
     listener:registerScriptHandler(cb, et)
     local dispatcher = node:getEventDispatcher()
     dispatcher:addEventListenerWithSceneGraphPriority(listener, node)
+end
+
+-- add dragging sensitive of the ccui.PageView
+function cox.setpv(pageview, arg)
+    local smooth = arg.smooth or 8
+    local onpress = arg.onpress
+    local pagen = #pageview:getPages()
+    for i = 0, pagen-1 do
+        local page = pageview:getPage(i)
+        page:addTouchEventListener(function(sender, e)
+            if e == ccui.TouchEventType.ended and onpress then
+                onpress(i)
+            elseif e == ccui.TouchEventType.canceled then 
+                local s = page:getContentSize()
+                local x, y = page:getPosition()
+                if s.width/2 > x and x > s.width/smooth and i > 0 then
+                    pageview:scrollToPage(i-1)
+                elseif -s.width/2 < x and x < -s.width/smooth and i < pagen-1 then
+                    pageview:scrollToPage(i+1)
+                end
+            end
+        end)
+    end
 end
 
 return cox
