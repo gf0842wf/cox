@@ -413,6 +413,16 @@ function cox.listen(node, cb, et)
     dispatcher:addEventListenerWithSceneGraphPriority(listener, node)
 end
 
+function cox.swallow(layer)
+    local listener1 = cc.EventListenerTouchOneByOne:create()
+    listener1:setSwallowTouches(true)
+    listener1:registerScriptHandler(function() return true end,cc.Handler.EVENT_TOUCH_BEGAN )
+    local eventDispatcher = layer:getEventDispatcher()
+    eventDispatcher:addEventListenerWithSceneGraphPriority(listener1, layer)
+end
+
+--- ui ---
+
 -- add dragging sensitive of the ccui.PageView
 function cox.setpv(pageview, arg)
     local smooth = arg.smooth or 8
