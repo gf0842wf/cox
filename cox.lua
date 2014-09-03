@@ -31,7 +31,7 @@ function cox.traceback(msg)
     return msg
 end
 
--- it will print error when the function panic
+-- print error when the function panic
 function cox.xpcall(main)
     local status, msg = xpcall(main, cox.traceback)
     if not status then
@@ -423,7 +423,7 @@ end
 
 --- ui ---
 
--- add dragging sensitive of the ccui.PageView
+-- add dragging sensitive to ccui.PageView
 function cox.setpv(pageview, arg)
     local smooth = arg.smooth or 8
     local onpress = arg.onpress
