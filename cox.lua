@@ -219,6 +219,9 @@ function cox.setspr(spr, arg)
             spr:setPositionY(size.height/2)
         end
     end
+    if arg.frame then
+        spr:setSpriteFrame(FC:getSpriteFrame(arg.frame))
+    end
 end
 
 
@@ -320,6 +323,11 @@ function cox.act(cfg)
             act = cc.Show:create()
         elseif tok == "hide" then
             act = cc.Hide:create()
+        elseif tok == "setframe" then
+            local f = function(sender, arg)
+                arg.spr:setSpriteFrame(FC:getSpriteFrame(arg.name))
+            end
+            act = cc.CallFunc:create(f, {spr=v[2], name=v[3]})
         end
         return act
     elseif type(tok) == "table" then
