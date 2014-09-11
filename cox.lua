@@ -14,16 +14,23 @@ local UD = cc.UserDefault:getInstance()
 local SA = cc.SimpleAudioEngine:getInstance()
 local FU = cc.FileUtils:getInstance()
 local GR = ccs.GUIReader:getInstance()
+local GV = D:getOpenGLView()
+local FSIZE = GV:getFrameSize()
 
 cox.d = D
 cox.tc = TC
 cox.fc = FC
+-- design resolution
 cox.w = SIZE.width
 cox.h = SIZE.height
 cox.ud = UD
 cox.sa = SA
 cox.fu = FU
 cox.gr = GR
+cox.gv = GV
+-- real resolution
+cox.fw = FSIZE.width
+cox.fh = FSIZE.height
 
 function cox.traceback(msg)
     print(debug.traceback())
@@ -160,14 +167,18 @@ spr.play()
 ]]
 function cox.newspr(arg)
     local spr = nil
+    local cls = cc.Sprite
+    if arg.scale9 == true then
+        cls = cc.Scale9Sprite
+    end
     if arg.texf then
-        spr = cc.Sprite:createWithSpriteFrameName(arg.texf)
+        spr = cls:createWithSpriteFrameName(arg.texf)
     elseif arg.tex then
-        spr = cc.Sprite:create(arg.tex)
+        spr = cls:create(arg.tex)
     elseif arg.animf then
         spr = cox._animspr(arg.animf[1], arg.animf[2], arg.animf[3])
     else
-        spr = cc.Sprite:create()
+        spr = cls:create()
     end
     cox.setspr(spr, arg)
     -- add some methods
@@ -207,6 +218,12 @@ function cox.setspr(spr, arg)
     if arg.scale then
         spr:setScale(arg.scale)
     end
+    if arg.scalex then
+        spr:setScaleX(arg.scalex)
+    end
+    if arg.scaley then
+        spr:setScaleY(arg.scaley)
+    end
     local parent = arg.parent or arg.on
     if parent then
         parent:addChild(spr)
@@ -221,6 +238,9 @@ function cox.setspr(spr, arg)
     end
     if arg.frame then
         spr:setSpriteFrame(FC:getSpriteFrame(arg.frame))
+    end
+    if arg.show then
+        spr:setVisible(arg.show)
     end
 end
 
@@ -407,11 +427,14 @@ function cox.ontouch(widget, cb, et)
 end
 
 -- add event listener on node
-function cox.listen(node, cb, et)
+function cox.listen(node, cb, et, swallow)
     et = et or cc.Handler.EVENT_TOUCH_BEGAN
     local listener = cc.EventListenerTouchOneByOne:create()
+    if swallow == true then
+        listener:setSwallowTouches(true)
+    end
     -- it must have EVENT_TOUCH_BEGAN
-    if et ~= cc.Handler.EVENT_TOUCH_BEGAN then
+    if et ~= cc.Handler.EVENT_TOUCH_BEGAN and et ~= nil then
         listener:registerScriptHandler(function() 
             return true
         end, cc.Handler.EVENT_TOUCH_BEGAN)
@@ -452,6 +475,24 @@ function cox.setpv(pageview, arg)
             end
         end)
     end
+end
+
+--- utils ---
+
+-- transform angle < 180
+local function normala(a)
+    if a > 180 then a = -(360 - a)
+    elseif a < -180 then a = 360 + a
+    end
+    return a
+end
+
+-- get angle difference in 180
+function cox.diffa(a, b)
+    local na = normala(a)
+    local nb = normala(b)
+    local dif = math.abs(na - nb)
+    return dif <= 180 and dif or 360 - dif
 end
 
 return cox
