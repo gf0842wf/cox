@@ -239,7 +239,7 @@ function cox.setspr(spr, arg)
     if arg.frame then
         spr:setSpriteFrame(FC:getSpriteFrame(arg.frame))
     end
-    if arg.show then
+    if arg.show ~= nil then
         spr:setVisible(arg.show)
     end
 end
