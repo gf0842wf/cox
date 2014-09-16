@@ -420,7 +420,7 @@ end
 -- add ui touch event
 function cox.ontouch(widget, cb, et)
     et = et or ccui.TouchEventType.ended
-    widget:addTouchEventListener(function(sender, e) 
+    widget:addTouchEventListener(function(sender, e)
         if e ~= et then return true end
         return cb()
     end)
