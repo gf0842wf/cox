@@ -242,6 +242,15 @@ function cox.setspr(spr, arg)
     if arg.show ~= nil then
         spr:setVisible(arg.show)
     end
+    if arg.alpha then
+        spr:setOpacity(arg.alpha)
+    end
+    if arg.flipx then
+        spr:setFlippedX(true)
+    end
+    if arg.flipy then
+        spr:setFlippedY(true)
+    end
 end
 
 
