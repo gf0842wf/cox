@@ -504,4 +504,33 @@ function cox.diffa(a, b)
     return dif <= 180 and dif or 360 - dif
 end
 
+-- get distance of p to line, p0-p1 is the segment end points 
+function cox.p2l(p, p0, p1, dir)
+    if math.abs(p1.x-p0.x) < math.abs(p1.y-p0.y) then
+        p = cc.p(p.y, p.x)
+        p0 = cc.p(p0.y, p0.x)
+        p1 = cc.p(p1.y, p1.x)
+    end
+    -- exclude backward
+    if dir == true then
+        if (p.x-p0.x)*(p1.x-p0.x) < 0 then
+            return 1/0
+        end
+    end
+    local k = (p1.y-p0.y)/(p1.x-p0.x)
+    local a = k
+    local b = -1
+    local c = p0.y - p0.x * k
+    local d = (a*p.x+b*p.y+c) / (a*a+b*b)^0.5
+    return math.abs(d)
+end
+
+function cox.schedule(callback, dt)
+    return D:getScheduler():scheduleScriptFunc(callback, dt, false)
+end
+
+function cox.unschedule(entry)
+    D:getScheduler():unscheduleScriptEntry(entry)
+end
+
 return cox
