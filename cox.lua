@@ -357,6 +357,8 @@ function cox.act(cfg)
                 arg.spr:setSpriteFrame(FC:getSpriteFrame(arg.name))
             end
             act = cc.CallFunc:create(f, {spr=v[2], name=v[3]})
+        elseif tok == "jumpb" then
+            act = cc.JumpBy:create(v[2], v[3], v[4], v[5])
         end
         return act
     elseif type(tok) == "table" then
@@ -431,7 +433,8 @@ function cox.ontouch(widget, cb, et)
     et = et or ccui.TouchEventType.ended
     widget:addTouchEventListener(function(sender, e)
         if e ~= et then return true end
-        return cb()
+        cb()
+        return true
     end)
 end
 
@@ -459,6 +462,11 @@ function cox.swallow(layer)
     listener1:registerScriptHandler(function() return true end,cc.Handler.EVENT_TOUCH_BEGAN )
     local eventDispatcher = layer:getEventDispatcher()
     eventDispatcher:addEventListenerWithSceneGraphPriority(listener1, layer)
+end
+
+-- removeFromParent has some bugs, use this instead
+function cox.safedel(node)
+    node:runAction(cc.RemoveSelf:create())
 end
 
 --- ui ---
