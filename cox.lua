@@ -440,28 +440,27 @@ end
 
 -- add event listener on node
 function cox.listen(node, cb, et, swallow)
-    et = et or cc.Handler.EVENT_TOUCH_BEGAN
     local listener = cc.EventListenerTouchOneByOne:create()
-    if swallow == true then
+    if swallow ~= false then
         listener:setSwallowTouches(true)
     end
     -- it must have EVENT_TOUCH_BEGAN
-    if et ~= cc.Handler.EVENT_TOUCH_BEGAN and et ~= nil then
+    if et ~= cc.Handler.EVENT_TOUCH_BEGAN then
         listener:registerScriptHandler(function() 
             return true
         end, cc.Handler.EVENT_TOUCH_BEGAN)
     end
-    listener:registerScriptHandler(cb, et)
+    listener:registerScriptHandler(cb, et or cc.Handler.EVENT_TOUCH_BEGAN)
     local dispatcher = node:getEventDispatcher()
     dispatcher:addEventListenerWithSceneGraphPriority(listener, node)
 end
 
-function cox.swallow(layer)
+function cox.swallow(node)
     local listener1 = cc.EventListenerTouchOneByOne:create()
     listener1:setSwallowTouches(true)
     listener1:registerScriptHandler(function() return true end,cc.Handler.EVENT_TOUCH_BEGAN )
-    local eventDispatcher = layer:getEventDispatcher()
-    eventDispatcher:addEventListenerWithSceneGraphPriority(listener1, layer)
+    local eventDispatcher = node:getEventDispatcher()
+    eventDispatcher:addEventListenerWithSceneGraphPriority(listener1, node)
 end
 
 -- removeFromParent has some bugs, use this instead
