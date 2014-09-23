@@ -51,6 +51,7 @@ function table.del(t, elem)
     for i, v in ipairs(t) do
         if v == elem then
             table.remove(t, i)
+            break
         end
     end
 end
@@ -445,7 +446,7 @@ function cox.listen(node, cb, et, swallow)
         listener:setSwallowTouches(true)
     end
     -- it must have EVENT_TOUCH_BEGAN
-    if et ~= cc.Handler.EVENT_TOUCH_BEGAN then
+    if et ~= nil and et ~= cc.Handler.EVENT_TOUCH_BEGAN then
         listener:registerScriptHandler(function() 
             return true
         end, cc.Handler.EVENT_TOUCH_BEGAN)
@@ -469,6 +470,22 @@ function cox.safedel(node)
 end
 
 --- ui ---
+
+function cox.button(arg)
+    local spr = ccui.Button:create()
+    if arg.normal then
+        spr:loadTextureNormal(arg.normal, ccui.TextureResType.plistType)
+    end
+    if arg.pressed then
+        spr:loadTexturePressed(arg.pressed, ccui.TextureResType.plistType)
+    end
+    cox.setspr(spr, arg)
+    -- add some methods
+    spr.set = cox.setspr
+    spr.runact = cox.runact
+    spr.ontouch = cox.ontouch
+    return spr
+end
 
 -- add dragging sensitive to ccui.PageView
 function cox.setpv(pageview, arg)
