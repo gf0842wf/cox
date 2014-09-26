@@ -530,6 +530,7 @@ end
 
 -- get distance of p to line, p0-p1 is the segment end points 
 function cox.p2l(p, p0, p1, dir)
+    -- exchange x and y
     if math.abs(p1.x-p0.x) < math.abs(p1.y-p0.y) then
         p = cc.p(p.y, p.x)
         p0 = cc.p(p0.y, p0.x)
