@@ -56,6 +56,15 @@ function table.del(t, elem)
     end
 end
 
+-- update attributes to another table
+function table.update(dst, src)
+    for k, v in pairs(src) do
+        if type(k) ~= "number" then
+            dst[k] = v
+        end
+    end
+end
+
 -- set resolution
 function cox.setrso(w, h, type)
     D:getOpenGLView():setDesignResolutionSize(w, h, type)
