@@ -98,16 +98,17 @@ function cox.setud(name, v)
     end
 end
 
-function cox.getud(name, t, defv)
+function cox.getud(name, defv)
     local v
-    if t == "b" then
+    local t = type(defv)
+    if t == "boolean" then
         v = UD:getBoolForKey(name)
-    elseif t == "n" then
+    elseif t == "number" then
         v = UD:getDoubleForKey(name)
         if defv and v == 0 then
             v = defv
         end
-    elseif t == "s" then
+    elseif t == "string" then
         v = UD:getStringForKey(name)
     end
     if v == nil then
