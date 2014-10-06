@@ -15,6 +15,10 @@ local SA = cc.SimpleAudioEngine:getInstance()
 local FU = cc.FileUtils:getInstance()
 local GR = ccs.GUIReader:getInstance()
 local GV = D:getOpenGLView()
+if not GV then
+    GV = cc.GLView:createWithRect("", cc.rect(0,0,800,480))
+    D:setOpenGLView(GV)
+end
 local FSIZE = GV:getFrameSize()
 
 cox.d = D
