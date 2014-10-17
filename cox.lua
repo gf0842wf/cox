@@ -50,6 +50,10 @@ function cox.xpcall(main)
     end
 end
 
+function table.append(t, elem)
+    table.insert(t, #t+1, elem)
+end
+
 -- remove by element
 function table.del(t, elem)
     for i, v in ipairs(t) do
@@ -106,14 +110,11 @@ function cox.getud(name, defv)
     local v
     local t = type(defv)
     if t == "boolean" then
-        v = UD:getBoolForKey(name)
+        v = UD:getBoolForKey(name, defv)
     elseif t == "number" then
-        v = UD:getDoubleForKey(name)
-        if defv and v == 0 then
-            v = defv
-        end
+        v = UD:getDoubleForKey(name, defv)
     elseif t == "string" then
-        v = UD:getStringForKey(name)
+        v = UD:getStringForKey(name, defv)
     end
     if v == nil then
         v = defv
@@ -215,6 +216,9 @@ function cox.setspr(spr, arg)
     end
     if arg.z then
         spr:setLocalZOrder(arg.z)
+    end
+    if arg.gz then
+        spr:setGlobalZOrder(arg.gz)
     end
     -- normalized position
     if arg.np then
