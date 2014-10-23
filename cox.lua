@@ -16,7 +16,7 @@ local FU = cc.FileUtils:getInstance()
 local GR = ccs.GUIReader:getInstance()
 local GV = D:getOpenGLView()
 if not GV then
-    GV = cc.GLView:createWithRect("", cc.rect(0,0,800,480))
+    GV = cc.GLView:createWithRect("", cc.rect(0,0,960,640))
     D:setOpenGLView(GV)
 end
 local FSIZE = GV:getFrameSize()
@@ -64,7 +64,7 @@ function table.del(t, elem)
     end
 end
 
--- update attributes to another table
+-- merge attributes to another table
 function table.update(dst, src)
     for k, v in pairs(src) do
         if type(k) ~= "number" then
