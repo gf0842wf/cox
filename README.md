@@ -1,9 +1,9 @@
 cox
 ===
-A lightweight unix style wrapping of Cocos2d-x-lua.
+A lightweight unix style framework of Cocos2d-lua.
 
 Current Version:
-v0.1.1, support cocos2d-x 3.2.
+v0.2, support cocos2d-x 3.4.
 
 
 How to use

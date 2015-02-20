@@ -1,8 +1,11 @@
--- A lightweight unix style wrapping of Cocos2d-x-lua.
+-- A lightweight unix style framework of Cocos2d-lua.
 -- https://github.com/zii/cox
--- v0.1, support cocos2d-x 3.2.
+-- v0.2, support cocos2d-x 3.4.
 
-require "Cocos2d"
+require "cocos.cocos2d.Cocos2d"
+require "cocos.cocos2d.Cocos2dConstants"
+require "cocos.cocos2d.functions"
+require "cocos.ui.GuiConstants"
 
 local cox = {}
 
@@ -15,10 +18,6 @@ local SA = cc.SimpleAudioEngine:getInstance()
 local FU = cc.FileUtils:getInstance()
 local GR = ccs.GUIReader:getInstance()
 local GV = D:getOpenGLView()
-if not GV then
-    GV = cc.GLView:createWithRect("", cc.rect(0,0,960,640))
-    D:setOpenGLView(GV)
-end
 local FSIZE = GV:getFrameSize()
 
 cox.d = D
@@ -83,7 +82,7 @@ end
 
 -- load sprite frames to texture cache
 function cox.addsf(format, ...)
-    cox.fc:addSpriteFrames(string.format(format, ...))
+    cox.fc:addSpriteFramesWithFile(string.format(format, ...))
 end
 
 -- run or replace scene
@@ -129,7 +128,7 @@ local function onrelease(code, event)
         cox.d:endToLua()
     end
 end
-cox.bindkey(layer, onrelease)
+cox.bindk(layer, onrelease)
 ]]
 function cox.bindk(node, cb)
     local listener = cc.EventListenerKeyboard:create()
@@ -184,9 +183,6 @@ spr.play()
 function cox.newspr(arg)
     local spr = nil
     local cls = cc.Sprite
-    if arg.scale9 == true then
-        cls = cc.Scale9Sprite
-    end
     if arg.texf then
         spr = cls:createWithSpriteFrameName(arg.texf)
     elseif arg.tex then
