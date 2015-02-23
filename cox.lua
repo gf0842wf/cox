@@ -82,7 +82,7 @@ end
 
 -- load sprite frames to texture cache
 function cox.addsf(format, ...)
-    cox.fc:addSpriteFramesWithFile(string.format(format, ...))
+    cox.fc:addSpriteFrames(string.format(format, ...))
 end
 
 -- run or replace scene
@@ -495,6 +495,27 @@ function cox.button(arg)
     end
     cox.setspr(spr, arg)
     -- add some methods
+    spr.set = cox.setspr
+    spr.runact = cox.runact
+    spr.ontouch = cox.ontouch
+    return spr
+end
+
+--[[ create charmap label
+eg.
+local num = cox.charlabel("num-1.png", 52, 67, 48, {
+on=layer, 
+x=100, 
+y=100
+})
+]]
+function cox.charlabel(file, width, height, init_code, arg)
+    local spr = cc.Label:createWithCharMap(file, width, height, init_code)
+    cox.setspr(spr, arg)
+    -- add meta methods
+    spr.setstr = function(this, format, ...)
+        this:setString(string.format(tostring(format), ...))
+    end
     spr.set = cox.setspr
     spr.runact = cox.runact
     spr.ontouch = cox.ontouch
